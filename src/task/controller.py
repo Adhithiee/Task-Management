@@ -11,18 +11,18 @@ def create_task(body:TaskSchema,db:Session):
     db.commit()
     db.refresh(new_task)
 
-    return {"status":"Task Created Successfully!","data":new_task}
+    return new_task
 
 def get_task(db:Session):
     task=db.query(TaskModel).all()
-    return {"status":"Task Retrieved Successfully!","data":task}
+    return task
 
 def get_one_task(id:int,db:Session):
     task=db.query(TaskModel).get(id)
 
     if not task:
         raise HTTPException(404,detail="ID not found")
-    return {"status":"Task Retrieved Successfully!","data":task}
+    return task
 
 def edit_task(body:TaskSchema,id:int,db:Session):
     task=db.query(TaskModel).get(id)
@@ -37,7 +37,7 @@ def edit_task(body:TaskSchema,id:int,db:Session):
     db.commit()
     db.refresh(task)
 
-    return {"status":"Task Updated Successfully!","data":task}
+    return task
 
 def delete_task(id:int,db:Session):
     task=db.query(TaskModel).get(id)
