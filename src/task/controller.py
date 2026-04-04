@@ -21,5 +21,31 @@ def get_one_task(id:int,db:Session):
     task=db.query(TaskModel).get(id)
 
     if not task:
-        raise HTTPException(404,detail="Task ID not found")
+        raise HTTPException(404,detail="ID not found")
     return {"status":"Task Retrieved Successfully!","data":task}
+
+def edit_task(body:TaskSchema,id:int,db:Session):
+    task=db.query(TaskModel).get(id)
+    if not task:
+        raise HTTPException(404,detail="ID not found")
+    
+    data = body.model_dump()
+    for field,value in data.items():
+        setattr(task,field,value)
+
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+
+    return {"status":"Task Updated Successfully!","data":task}
+
+def delete_task(id:int,db:Session):
+    task=db.query(TaskModel).get(id)
+    if not task:
+        raise HTTPException(404,details="ID not found")
+    
+    db.delete(task)
+    db.commit()
+
+    return None
+    

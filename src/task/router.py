@@ -16,3 +16,11 @@ def get_task(db=Depends(get_db)):
 @task_routes.get("/get_task/{id}")
 def get_one_task(id:int,db = Depends(get_db)):
     return controller.get_one_task(id,db)
+
+@task_routes.put("/edit_task/{id}")
+def edit_task(body:TaskSchema,id:int,db=Depends(get_db)):
+    return controller.edit_task(body,id,db)
+
+@task_routes.delete("/delete_task/{id}")
+def delete_task(id:int,db=Depends(get_db)):
+    return controller.delete_task(id,db)
