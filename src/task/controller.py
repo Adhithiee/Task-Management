@@ -1,6 +1,7 @@
 from src.task.dtos import TaskSchema
 from sqlalchemy.orm import Session
 from src.task.models import TaskModel
+from fastapi import HTTPException
 
 def create_task(body:TaskSchema,db:Session):
     data = body.model_dump()
@@ -11,3 +12,14 @@ def create_task(body:TaskSchema,db:Session):
     db.refresh(new_task)
 
     return {"status":"Task Created Successfully!","data":new_task}
+
+def get_task(db:Session):
+    task=db.query(TaskModel).all()
+    return {"status":"Task Retrieved Successfully!","data":task}
+
+def get_one_task(id:int,db:Session):
+    task=db.query(TaskModel).get(id)
+
+    if not task:
+        raise HTTPException(404,detail="Task ID not found")
+    return {"status":"Task Retrieved Successfully!","data":task}
