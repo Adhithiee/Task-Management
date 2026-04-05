@@ -49,7 +49,7 @@ def login(body:LoginSchema,db:Session):
     
     exp_time = datetime.now()+timedelta(minutes=settings.EXP_TIME)    
     token = jwt.encode({"_id":user.id,"exp":exp_time},settings.SECRET_KEY,settings.ALGORITHM)
-       
+
     return {"token":token}
 
 def is_auth(request:Request,db:Session):
@@ -71,3 +71,16 @@ def is_auth(request:Request,db:Session):
         return user
     except InvalidTokenError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="You are Unauthorized")
+    
+def get_all_user(db:Session):
+    users = db.query(UserModel).all()
+
+    return users
+
+def get_user_by_id(id:int,db:Session):
+    user = db.query(UserModel).get(id)
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User not found")
+    
+    return user
